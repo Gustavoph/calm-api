@@ -1,0 +1,21 @@
+services:
+  db:
+    container_name: endoloft-db
+    image: postgres
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      PGDATA: /data/postgres
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-U", "postgres", "-d", "endoloft", "-t", "1"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    env_file:
+      - .env
+    volumes:
+      - ./data/pg:/data/postgres
